@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiaoweiyunchuang.microcloud.mapper.UserMapper">
+  
+  <resultMap id="BaseResultMap" type="com.xiaoweiyunchuang.microcloud.domain.User">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="account" jdbcType="VARCHAR" property="account" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="user_name" jdbcType="VARCHAR" property="name" />
+    <result column="delFlag" jdbcType="VARCHAR" property="delflag" />
+    <result column="createdDate" jdbcType="DATE" property="createddate" />
+    <result column="createBy" jdbcType="VARCHAR" property="createby" />
+    <result column="lastUpdatedDate" jdbcType="DATE" property="lastupdateddate" />
+    <result column="lastUpdatedDateBy" jdbcType="VARCHAR" property="lastupdateddateby" />
+  </resultMap>
+  
+  <resultMap id="UserRoleMap" type="com.xiaoweiyunchuang.microcloud.domain.User" extends="BaseResultMap">
+      <collection property="roles" ofType="com.xiaoweiyunchuang.microcloud.domain.Role">
+        <id column="roleId" jdbcType="VARCHAR" property="id" />
+        <result column="role" jdbcType="VARCHAR" property="role" />
+        <result column="description" jdbcType="VARCHAR" property="description" />
+        <result column="delFlag" jdbcType="VARCHAR" property="delflag" />
+        <result column="createdDate" jdbcType="TIMESTAMP" property="createddate" />
+        <result column="createBy" jdbcType="VARCHAR" property="createby" />
+        <result column="lastUpdatedDate" jdbcType="TIMESTAMP" property="lastupdateddate" />
+        <result column="lastUpdatedDateBy" jdbcType="VARCHAR" property="lastupdateddateby" />
+        <collection property="permissions" ofType="com.xiaoweiyunchuang.microcloud.domain.Permission">
+          <id column="permissionId" jdbcType="VARCHAR" property="id" />
+          <result column="name" jdbcType="VARCHAR" property="name" />
+          <result column="permission" jdbcType="VARCHAR" property="permission" />
+          <result column="url" jdbcType="VARCHAR" property="url" />
+          <result column="resource_type" jdbcType="VARCHAR" property="resourceType" />
+          <result column="delFlag" jdbcType="VARCHAR" property="delflag" />
+          <result column="createdDate" jdbcType="TIMESTAMP" property="createddate" />
+          <result column="createBy" jdbcType="VARCHAR" property="createby" />
+          <result column="lastUpdatedDate" jdbcType="TIMESTAMP" property="lastupdateddate" />
+          <result column="lastUpdatedDateBy" jdbcType="VARCHAR" property="lastupdateddateby" />
+        </collection>
+      </collection>
+  </resultMap>
+
+  <select id="selectUserRolesAndPermissions" parameterType="com.xiaoweiyunchuang.microcloud.domain.User" resultMap="UserRoleMap">
+          select
+            u.id,
+            u.account,
+            u.password,
+            r.id as roleId,
+            r.role,
+            r.description,
+            tp.id as permissionId,
+            tp.name,
+            tp.permission,
+            tp.url,
+            tp.resource_type
+        from
+            (select
+            tu.id,
+            tu.account,
+            tu.password
+            from t_user tu) u
+          left join
+          t_user_role ur on u.id = ur.user_id
+          left join
+          t_role r on ur.role_id = r.id
+          left join
+          t_role_permission trp on trp.role_id = r.id
+          left join
+          t_permission tp on trp.permission_id = tp.id
+        where
+        <if test="id != null">
+          u.id = #{id,jdbcType=VARCHAR}
+        </if>
+        <if test="account != null">
+          account = #{account,jdbcType=VARCHAR}
+        </if>
+  </select>
+  
+  <sql id="Base_Column_List">
+    id, account, password, delFlag, createdDate, createBy, lastUpdatedDate, lastUpdatedDateBy
+  </sql>
+
+  <sql id="Base_Column_Condition">
+    <where>
+      <if test="id != null">
+        id = #{id,jdbcType=VARCHAR}
+      </if>
+      <if test="account != null">
+        account = #{account,jdbcType=VARCHAR}
+      </if>
+      <if test="password != null">
+        password = #{password,jdbcType=VARCHAR}
+      </if>
+      <if test="delflag != null">
+        delFlag = #{delflag,jdbcType=VARCHAR}
+      </if>
+      <if test="createddate != null">
+        createdDate = #{createddate,jdbcType=DATE}
+      </if>
+      <if test="createby != null">
+        createBy = #{createby,jdbcType=VARCHAR}
+      </if>
+      <if test="lastupdateddate != null">
+        lastUpdatedDate = #{lastupdateddate,jdbcType=DATE}
+      </if>
+      <if test="lastupdateddateby != null">
+        lastUpdatedDateBy = #{lastupdateddateby,jdbcType=VARCHAR}
+      </if>
+    </where>
+  </sql>
+
+  <select id="searchSelective" parameterType="com.xiaoweiyunchuang.microcloud.domain.User" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_user
+    <include refid="Base_Column_Condition" />
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from t_user
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.xiaoweiyunchuang.microcloud.domain.User">
+    <selectKey keyProperty="id" resultType="String" order="BEFORE">
+      select replace(uuid(),'-','') from dual
+    </selectKey>
+    insert into t_user (id, account, password, 
+      delFlag, createdDate, createBy, 
+      lastUpdatedDate, lastUpdatedDateBy)
+    values (#{id,jdbcType=VARCHAR}, #{account,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
+      #{delflag,jdbcType=VARCHAR}, #{createddate,jdbcType=DATE}, #{createby,jdbcType=VARCHAR}, 
+      #{lastupdateddate,jdbcType=DATE}, #{lastupdateddateby,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xiaoweiyunchuang.microcloud.domain.User">
+    insert into t_user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="account != null">
+        account,
+      </if>
+      <if test="password != null">
+        password,
+      </if>
+      <if test="delflag != null">
+        delFlag,
+      </if>
+      <if test="createddate != null">
+        createdDate,
+      </if>
+      <if test="createby != null">
+        createBy,
+      </if>
+      <if test="lastupdateddate != null">
+        lastUpdatedDate,
+      </if>
+      <if test="lastupdateddateby != null">
+        lastUpdatedDateBy,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="account != null">
+        #{account,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="delflag != null">
+        #{delflag,jdbcType=VARCHAR},
+      </if>
+      <if test="createddate != null">
+        #{createddate,jdbcType=DATE},
+      </if>
+      <if test="createby != null">
+        #{createby,jdbcType=VARCHAR},
+      </if>
+      <if test="lastupdateddate != null">
+        #{lastupdateddate,jdbcType=DATE},
+      </if>
+      <if test="lastupdateddateby != null">
+        #{lastupdateddateby,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xiaoweiyunchuang.microcloud.domain.User">
+    update t_user
+    <set>
+      <if test="account != null">
+        account = #{account,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="delflag != null">
+        delFlag = #{delflag,jdbcType=VARCHAR},
+      </if>
+      <if test="createddate != null">
+        createdDate = #{createddate,jdbcType=DATE},
+      </if>
+      <if test="createby != null">
+        createBy = #{createby,jdbcType=VARCHAR},
+      </if>
+      <if test="lastupdateddate != null">
+        lastUpdatedDate = #{lastupdateddate,jdbcType=DATE},
+      </if>
+      <if test="lastupdateddateby != null">
+        lastUpdatedDateBy = #{lastupdateddateby,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xiaoweiyunchuang.microcloud.domain.User">
+    update t_user
+    set account = #{account,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      delFlag = #{delflag,jdbcType=VARCHAR},
+      createdDate = #{createddate,jdbcType=DATE},
+      createBy = #{createby,jdbcType=VARCHAR},
+      lastUpdatedDate = #{lastupdateddate,jdbcType=DATE},
+      lastUpdatedDateBy = #{lastupdateddateby,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Copyright 2015-2016 the original author or authors. Licensed under the 
+	Apache License, Version 2.0 (the "License"); you may not use this file except 
+	in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 
+	Unless required by applicable law or agreed to in writing, software distributed 
+	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
+	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
+	the specific language governing permissions and limitations under the License. -->
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiaoweiyunchuang.microcloud.mapper.UserTestMapper">
+	
+	<insert id="saveUser" parameterType="UserTest">
+		insert into t_test_user(name,age,password,salary)
+		values(#{name,jdbcType=VARCHAR},#{age,jdbcType=INTEGER},#{password,jdbcType=VARCHAR},#{salary,jdbcType=DECIMAL})
+	</insert>
+
+	<update id="updateUser" parameterType="UserTest">
+		update t_test_user set
+			name = #{name,jdbcType=VARCHAR} ,
+			age = #{age,jdbcType=INTEGER},
+			password = #{password,jdbcType=VARCHAR} ,
+			salary = #{salary,jdbcType=DECIMAL}
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+
+	<select id="findUserById" resultType="UserTest">
+		select * from t_test_user where id = #{id,jdbcType=INTEGER}
+	</select>
+
+	<select id="findUserByName" resultType="UserTest">
+		select * from t_test_user where name = #{name,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="findAllUsers" resultType="UserTest">
+		select * from t_test_user
+	</select>
+	
+	<delete id="deleteUserById">
+		delete from t_test_user where id = #{id,jdbcType=INTEGER}
+	</delete>
+
+    <delete id="deleteAllUsers">
+		delete from t_test_user
+	</delete>
+	
+</mapper>

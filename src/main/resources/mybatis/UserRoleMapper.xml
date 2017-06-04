@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiaoweiyunchuang.microcloud.mapper.UserRoleMapper">
+  <resultMap id="BaseResultMap" type="com.xiaoweiyunchuang.microcloud.domain.UserRole">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="role_id" jdbcType="VARCHAR" property="roleId" />
+    <result column="delFlag" jdbcType="VARCHAR" property="delflag" />
+    <result column="createdDate" jdbcType="TIMESTAMP" property="createddate" />
+    <result column="createBy" jdbcType="VARCHAR" property="createby" />
+    <result column="lastUpdatedDate" jdbcType="TIMESTAMP" property="lastupdateddate" />
+    <result column="lastUpdatedDateBy" jdbcType="VARCHAR" property="lastupdateddateby" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_id, role_id, delFlag, createdDate, createBy, lastUpdatedDate, lastUpdatedDateBy
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_user_role
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from t_user_role
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.xiaoweiyunchuang.microcloud.domain.UserRole">
+    insert into t_user_role (id, user_id, role_id, 
+      delFlag, createdDate, createBy, 
+      lastUpdatedDate, lastUpdatedDateBy)
+    values (#{id,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{roleId,jdbcType=VARCHAR}, 
+      #{delflag,jdbcType=VARCHAR}, #{createddate,jdbcType=TIMESTAMP}, #{createby,jdbcType=VARCHAR}, 
+      #{lastupdateddate,jdbcType=TIMESTAMP}, #{lastupdateddateby,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xiaoweiyunchuang.microcloud.domain.UserRole">
+    insert into t_user_role
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="roleId != null">
+        role_id,
+      </if>
+      <if test="delflag != null">
+        delFlag,
+      </if>
+      <if test="createddate != null">
+        createdDate,
+      </if>
+      <if test="createby != null">
+        createBy,
+      </if>
+      <if test="lastupdateddate != null">
+        lastUpdatedDate,
+      </if>
+      <if test="lastupdateddateby != null">
+        lastUpdatedDateBy,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="roleId != null">
+        #{roleId,jdbcType=VARCHAR},
+      </if>
+      <if test="delflag != null">
+        #{delflag,jdbcType=VARCHAR},
+      </if>
+      <if test="createddate != null">
+        #{createddate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createby != null">
+        #{createby,jdbcType=VARCHAR},
+      </if>
+      <if test="lastupdateddate != null">
+        #{lastupdateddate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastupdateddateby != null">
+        #{lastupdateddateby,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xiaoweiyunchuang.microcloud.domain.UserRole">
+    update t_user_role
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="roleId != null">
+        role_id = #{roleId,jdbcType=VARCHAR},
+      </if>
+      <if test="delflag != null">
+        delFlag = #{delflag,jdbcType=VARCHAR},
+      </if>
+      <if test="createddate != null">
+        createdDate = #{createddate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createby != null">
+        createBy = #{createby,jdbcType=VARCHAR},
+      </if>
+      <if test="lastupdateddate != null">
+        lastUpdatedDate = #{lastupdateddate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastupdateddateby != null">
+        lastUpdatedDateBy = #{lastupdateddateby,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xiaoweiyunchuang.microcloud.domain.UserRole">
+    update t_user_role
+    set user_id = #{userId,jdbcType=VARCHAR},
+      role_id = #{roleId,jdbcType=VARCHAR},
+      delFlag = #{delflag,jdbcType=VARCHAR},
+      createdDate = #{createddate,jdbcType=TIMESTAMP},
+      createBy = #{createby,jdbcType=VARCHAR},
+      lastUpdatedDate = #{lastupdateddate,jdbcType=TIMESTAMP},
+      lastUpdatedDateBy = #{lastupdateddateby,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>
